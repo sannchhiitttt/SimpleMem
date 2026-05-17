@@ -50,6 +50,27 @@ from simplemem import create
 mem = create(mode="text")   # or mode="omni"
 ```
 
+### Optimize retrieval config
+
+Tune retrieval hyperparameters offline on a dev set, then deploy the resulting
+`Config` for inference:
+
+```python
+import simplemem
+from simplemem import SimpleMem, load_config
+
+dev_questions = [
+    ("When is the meeting?", "2pm tomorrow"),
+    ("What should Bob prepare?", "quarterly report and client feedback"),
+]
+config = simplemem.optimize(mem, dev_questions, max_rounds=3)
+config.save("my_config.json")
+
+# Later, deploy with optimized config
+config = load_config("my_config.json")
+mem = SimpleMem(config=config)
+```
+
 ---
 
 ## 📦 Installation
@@ -62,7 +83,6 @@ cd SimpleMem
 
 pip install -e .                  # default: text + multimodal + evolver
 pip install -e ".[server]"        # + MCP / HTTP server (mcp, fastapi, ...)
-pip install -e ".[benchmark]"     # + datasets, bert-score, rouge-score
 pip install -e ".[all]"           # everything, including dev tools
 
 cp config.py.example config.py
