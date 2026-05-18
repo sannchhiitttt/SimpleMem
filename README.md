@@ -71,35 +71,14 @@ config = load_config("my_config.json")
 mem = SimpleMem(config=config)
 ```
 
-This is a thin convenience wrapper. It searches retrieval parameters on your
-`dev_questions` and writes back a deployable `Config`. It does **not**
-reproduce the paper numbers, because the paper experiments rely on
-benchmark-specific category labels, adapter prompts, and seeded session
-ordering that this API does not surface. To reproduce the paper, see the
-**Reproducing paper results** section below.
+This is a thin convenience wrapper around EvolveMem's diagnosis loop. It runs
+an LLM-driven Evaluate → Diagnose → Propose → Guard cycle on your
+`dev_questions` and can toggle global retrieval flags (top_k, fusion mode,
+answer verification, reflection rounds, entity swap, ...) based on which
+questions the current config gets wrong.
 
-### Reproducing paper results
-
-The original EvolveMem entry point is preserved under `EvolveMem/` as a
-self-contained, paper-faithful standalone version. It implements the full
-self-evolution loop described in the paper (Evaluate, Diagnose, Propose,
-Guard) with per-category overrides and benchmark adapters for LoCoMo,
-MemBench, and LongMemEval. This is the canonical way to reproduce the
-published numbers.
-
-```bash
-cd EvolveMem
-pip install -r requirements.txt
-
-export OPENAI_API_KEY="your-key"
-export OPENAI_API_BASE="https://api.openai.com/v1"
-export LLM_MODEL="gpt-4o"
-
-python run_evolution.py --data data/locomo10.json --max-rounds 7
-```
-
-See `EvolveMem/README.md` for the full guide, including MemBench and
-LongMemEval entry points and per-benchmark configuration.
+For the full standalone EvolveMem with benchmark adapters and per-category
+overrides, see `EvolveMem/README.md`.
 
 ---
 
@@ -125,15 +104,6 @@ cp config.py.example config.py
 
 Outstanding items from the `simplemem/` package merge. Drop these as fast as work lands; they're not visible to users of the text path but matter for finishing the unified package.
 
-### 🟠 Partial — `simplemem.optimize()` wrapper still has API gaps
-
-All `simplemem.*` imports work now (config modules landed in `d59fa45`). But the `simplemem.optimize()` wrapper in `simplemem/evolver/optimize.py` still has two API mismatches against the actual `EvolutionEngine`: it omits the required `llm_call` argument when constructing the engine, and it calls a non-existent `engine.run()` (the real method is `engine.evolve(sessions, qa_pairs)`).
-
-- [ ] Rewrite `simplemem/evolver/optimize.py` to construct `EvolutionEngine(llm_call, embedder, config)` and call `.evolve(sessions, qa_pairs)`.
-- [ ] Decide the contract for `simplemem.optimize()`. Either degraded-tuner mode (no category labels, no adapter, simplified `(question, gt)` tuples), or full passthrough that takes `sessions` + `qa_pairs` + `adapter` directly.
-
-To reproduce paper numbers without waiting on this wrapper, use `EvolveMem/run_evolution.py` directly. See **Reproducing paper results** above.
-
 ### 🟡 Non-blocking — legacy top-level dirs left in place
 
 The pre-refactor sources (`models/`, `utils/`, `database/`, `core/`, `OmniSimpleMem/`) still sit at the repo root and are imported by `main.py`, `test_locomo10.py`, `tests/`, `cross/`, `SKILL/`, `MCP/`, and `simplemem/integrations/*`. They were intentionally **not** deleted in this pass to avoid breaking those entry points. To finish cleaning up:
@@ -141,7 +111,7 @@ The pre-refactor sources (`models/`, `utils/`, `database/`, `core/`, `OmniSimple
 - [ ] Rewrite each of the above to import from `simplemem.core.*` / `simplemem.multimodal` instead of the top-level paths.
 - [ ] Delete the legacy top-level dirs once nothing depends on them.
 
-Note: `EvolveMem/` is **intentionally kept** at the repo root as the self-contained, paper-faithful standalone version. See **Reproducing paper results** above. It is not on the cleanup list.
+Note: `EvolveMem/` is **intentionally kept** at the repo root as the self-contained, full EvolveMem standalone version with benchmark adapters and per-category overrides. See `EvolveMem/README.md`. It is not on the cleanup list.
 
 ### 🟢 Done in this refactor pass (for context)
 
@@ -152,7 +122,8 @@ Note: `EvolveMem/` is **intentionally kept** at the repo root as the self-contai
 - `simplemem/evolver/optimize.py` import path corrected (`simplemem.optimizer` → `simplemem.evolver`) and the stale `from evolvemem.multi_retriever import …` in `evolution.py` was retargeted to `simplemem.evolver.multi_retriever`.
 - `setup.py` with `install_requires` grounded in `MCP/requirements.txt`, `OmniSimpleMem/setup.py`, and commit `9686aa5`'s canonical `pyproject.toml`. `pip install --dry-run -e .` and `-e ".[server]"` both resolve cleanly.
 - `simplemem/config.py`, `simplemem/evolver/config.py`, `simplemem/multimodal/core/config.py` added in `d59fa45` (root-cause was an over-broad `.gitignore` rule; fixed there too). All `simplemem.*` subpackages now import cleanly.
-- `EvolveMem/evolvemem/config.py` added (paper-faithful defaults from `99cd447`). The standalone `python EvolveMem/run_evolution.py` entry point now imports and bootstraps without errors.
+- `EvolveMem/evolvemem/config.py` added (defaults matching MetaMem `99cd447`). The standalone `python EvolveMem/run_evolution.py` entry point now imports and bootstraps without errors.
+- `simplemem/evolver/optimize.py` rewritten as a real degraded-mode wrapper over `EvolutionEngine.evolve()`. Smoke-tested end-to-end against a 3-dialogue / 3-question dev set on Azure gpt-4o-mini + MiniLM embedder.
 
 ---
 
