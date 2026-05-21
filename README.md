@@ -6,11 +6,11 @@
 
 ## Efficient Lifelong Memory for LLM Agents — Text & Multimodal
 
-<small>Store, compress, and retrieve long-term memories with semantic lossless compression. Now with multimodal support for text, image, audio & video. Works across Claude, Cursor, LM Studio, and more.</small>
+<small>Store, compress, and retrieve long-term memories with semantic lossless compression. Now with multimodal support for text, image, audio & video.</small>
 
 </div>
 
-<p><b>Works with any AI platform that supports MCP or Python integration</b></p>
+<p><b>Works with any AI platform that supports MCP (text memory) or Python integration (full multimodal)</b></p>
 
 <table>
 <tr>
@@ -137,6 +137,7 @@
 - [🐳 Docker](#-run-with-docker)
 - [🔌 MCP Server](#-mcp-server-text-memory)
 - [📊 Evaluation](#-evaluation)
+- [🗺️ Roadmap](#️-roadmap)
 - [📝 Citation](#-citation)
 
 ---
@@ -551,6 +552,26 @@ Use the exact configurations in `config.py`:
 - **🚀 High-capability**: GPT-4.1-mini, Qwen3-Plus
 - **⚙️ Efficient**: Qwen2.5-1.5B, Qwen2.5-3B
 - **🔍 Embedding**: Qwen3-Embedding-0.6B (1024-d)
+
+---
+
+## 🗺️ Roadmap
+
+Current capability by integration channel:
+
+| Capability | Python (`pip install`) | MCP server (Claude Desktop, Cursor, ...) |
+|:--|:--:|:--:|
+| Text memory | ✅ | ✅ |
+| Multimodal (image / audio / video) | ✅ | ⬜ planned |
+| `optimize()` self-evolving retrieval | ✅ | ⬜ planned |
+
+Planned work to close the gap (the MCP server is a standalone multi-tenant text service; these are real features, not doc fixes):
+
+- [ ] **Multimodal over MCP.** Add `memory_add_image` / `memory_add_audio` / `memory_add_video` tools. Needs a file-upload path (base64 or URL, since MCP cannot pass local file paths), a multi-tenant adaptation of the Omni-SimpleMem storage backend, and server-side vision/audio model access.
+- [ ] **EvolveMem over MCP.** Expose `optimize()` as an MCP tool. More tractable than multimodal (text in, JSON config out, no file transport), but the MCP retriever currently honors only `semantic_top_k` / `keyword_top_k` of the ~10 dimensions EvolveMem evolves. Requires extending the MCP retriever to support the remaining knobs (structured top_k, fusion mode/weights, entity swap, query decomposition, answer verification), an adapter to run the evolution loop over a tenant's stored memories, per-tenant config persistence, and async execution (the loop is LLM-heavy and would time out a synchronous request).
+- [ ] **Docker** inherits both automatically once the MCP server supports them (add multimodal deps to the image and an Omni storage volume).
+
+For full multimodal and self-evolving retrieval today, use the Python API (see [Quick Start](#-quick-start)).
 
 ---
 
