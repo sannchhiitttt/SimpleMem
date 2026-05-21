@@ -59,6 +59,7 @@ EXTRAS = {
         "datasets>=2.0.0",
         "bert-score>=0.3.0",
         "rouge-score>=0.1.0",
+        "nltk>=3.8.0",
     ],
     # Dev tooling (subset of 9686aa5 pyproject.toml 'dev' group).
     "dev": [

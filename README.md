@@ -531,17 +531,36 @@ SimpleMem is available as a **cloud-hosted memory service** via the Model Contex
 
 ## 📊 Evaluation
 
-### 🧪 Run Benchmark Tests
+Each pillar has its own benchmark runner in its own directory. Install the benchmark extras first: `pip install -e ".[benchmark]"`.
+
+### 📝 SimpleMem (text) — LoCoMo
+
+Run from the repository root:
 
 ```bash
-# 🎯 Full LoCoMo benchmark
-python test_locomo10.py
-
-# 📉 Subset evaluation (5 samples)
-python test_locomo10.py --num-samples 5
-
-# 💾 Custom output file
+python test_locomo10.py                       # full LoCoMo benchmark
+python test_locomo10.py --num-samples 5       # quick subset
 python test_locomo10.py --result-file my_results.json
+```
+
+### 🧬 EvolveMem — self-evolution + LoCoMo / MemBench
+
+Run from the `EvolveMem/` directory (see [`EvolveMem/README.md`](EvolveMem/README.md)):
+
+```bash
+cd EvolveMem
+python run_evolution.py --data data/locomo10.json --max-rounds 7
+python run_benchmark.py locomo --sample 0 --initial weak --max-rounds 3
+python run_benchmark.py membench --agent FirstAgent --max-rounds 3
+```
+
+### 🧠 Omni-SimpleMem — LoCoMo / Mem-Gallery
+
+Run from the `OmniSimpleMem/` directory (see [`OmniSimpleMem/README.md`](OmniSimpleMem/README.md)):
+
+```bash
+cd OmniSimpleMem
+python benchmarks/locomo/run_locomo.py --data-path /path/to/locomo10.json --model gpt-4o
 ```
 
 ---
