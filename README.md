@@ -118,6 +118,7 @@
 
 ## 🔥 News
 
+- **[05/21/2026]** 📦 **Unified `simplemem` package — one import, auto-routing!** SimpleMem, Omni-SimpleMem, and EvolveMem now live in a single package. `from simplemem import SimpleMem` auto-selects the text or multimodal backend from the first method you call, and `simplemem.optimize(...)` taps EvolveMem's self-evolution loop. Install in one step with `pip install -e .`.
 - **[05/14/2026]** 🧬 **EvolveMem (v3.0) — Self-Evolving Memory via AutoResearch!** The retrieval infrastructure itself now self-evolves through LLM-driven closed-loop diagnosis. On LoCoMo, EvolveMem outperforms the strongest baseline by **+25.7% relative**; on MemBench, by **+18.9% relative**. The system discovers entirely new retrieval dimensions not present in the original design. [View EvolveMem →](EvolveMem/)
 - **[04/02/2026]** 🧠 **Omni-SimpleMem (v2.0) — Multimodal Memory is Here!** SimpleMem now supports **text, image, audio & video** memory. Achieving **new SOTA on LoCoMo (F1=0.613, +47%)** and **Mem-Gallery (F1=0.810, +51%)** over previous best. [View Omni-SimpleMem →](OmniSimpleMem/)
 - **[02/09/2026]** 🚀 **Cross-Session Memory — Outperforming Claude-Mem by 64%!** [View Cross-Session Documentation →](cross/README.md)
