@@ -396,14 +396,14 @@ EvolveMem closes a blind spot shared by almost every memory system: the stored c
 
 ### 📝 Notes for First-Time Users
 
-- Ensure you are using **Python 3.10 in your active environment**, not just installed globally.
+- Ensure you are using **Python 3.10+ in your active environment**, not just installed globally.
 - An OpenAI-compatible API key must be configured **before running any memory construction or retrieval**, otherwise initialization may fail.
 - When using non-OpenAI providers (e.g., Qwen or Azure OpenAI), verify both the model name and `OPENAI_BASE_URL` in `config.py`.
 - For large dialogue datasets, enabling parallel processing can significantly reduce memory construction time.
 
 ### 📋 Requirements
 
-- 🐍 Python 3.10
+- 🐍 Python 3.10+
 - 🔑 OpenAI-compatible API (OpenAI, Qwen, Azure OpenAI, etc.)
 
 ### 🛠️ Setup
