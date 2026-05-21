@@ -373,16 +373,7 @@ EvolveMem closes a blind spot shared by almost every memory system: the stored c
 
 </details>
 
-### 🧬 EvolveMem Results
-
-<table>
-<tr>
-<td align="center" width="200">🏆 <b>0.543 F1</b><br><sub>LoCoMo GPT-4o (+25.7% over SimpleMem)</sub></td>
-<td align="center" width="200">🏆 <b>0.572 F1</b><br><sub>LoCoMo GPT-5.1 (+36.8% over SimpleMem)</sub></td>
-<td align="center" width="200">🏆 <b>71.4% Acc</b><br><sub>MemBench (+18.9% over best baseline)</sub></td>
-<td align="center" width="150">🧬 <b>Self-evolving</b><br><sub>7 autonomous rounds</sub></td>
-</tr>
-</table>
+> 🧬 **EvolveMem** benchmark numbers are in the EvolveMem section below.
 
 ### 🧠 Omni-SimpleMem Results
 
@@ -478,8 +469,6 @@ The system then executes **parallel multi-view retrieval** across semantic, lexi
 
 </div>
 
-**Omni-SimpleMem** extends SimpleMem to **unified multimodal memory** — supporting text, image, audio, and video experiences with state-of-the-art accuracy across all five LLM backbones tested.
-
 Built on three principles: **Selective Ingestion** (entropy-driven filtering for each modality), **Progressive Retrieval** (hybrid FAISS + BM25 search with pyramid token-budget expansion), and **Knowledge Graph Augmentation** (multi-hop cross-modal reasoning).
 
 > 📖 Full documentation, benchmarks, and architecture details: [**Omni-SimpleMem →**](OmniSimpleMem/)
@@ -488,11 +477,7 @@ Built on three principles: **Selective Ingestion** (entropy-driven filtering for
 
 ## 🧬 EvolveMem: Self-Evolving Memory
 
-**EvolveMem** (v3.0) makes the retrieval infrastructure itself a first-class optimization target. While SimpleMem and Omni-SimpleMem keep retrieval configurations frozen, EvolveMem autonomously evolves its retrieval policy through an LLM-driven closed-loop:
-
-**Evaluate** → **Diagnose** failures → **Propose** config changes → **Guard** against regression → **Repeat**
-
-This self-evolution constitutes an AutoResearch process: the system conducts iterative research cycles on its own architecture, discovering new retrieval dimensions (query decomposition, entity-swap, answer verification) that were not in the original design.
+Self-evolving retrieval through an LLM-driven loop (**Evaluate → Diagnose → Propose → Guard → Repeat**), discovering new retrieval dimensions (query decomposition, entity-swap, answer verification) that were not in the original design. See the [Overview](#-overview) for how it fits the stack.
 
 | Benchmark | Backbone | EvolveMem | Best Baseline | Relative Gain |
 |-----------|----------|:---------:|:-------------:|:-------------:|
