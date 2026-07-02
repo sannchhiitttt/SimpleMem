@@ -64,7 +64,7 @@ class Settings:
     # LLM Provider Configuration
     llm_provider: str = field(default_factory=lambda: os.getenv(
         "LLM_PROVIDER",
-        "openrouter"  # Options: "openrouter", "ollama"
+        "ollama"  # Options: "openrouter", "ollama"
     ))
 
     # OpenRouter Configuration (used when llm_provider is "openrouter")
@@ -82,7 +82,7 @@ class Settings:
     # Common LLM Configuration
     llm_model: str = field(default_factory=lambda: os.getenv(
         "LLM_MODEL",
-        "openai/gpt-4.1-mini" # "qwen3:4b-instruct" Default model name
+        "gemma:4b" # "qwen3:4b-instruct" Default model name
     ))
     embedding_model: str = field(default_factory=lambda: os.getenv(
         "EMBEDDING_MODEL",
